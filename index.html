@@ -252,22 +252,16 @@
     white-space: nowrap;
   }
 
-  .slot-group {
-    display: flex;
-    height: 100%;
-  }
-
   .room-cell {
-    flex: 1;
     padding: 8px 10px;
-    border-left: 1px solid var(--border);
     min-width: 140px;
     min-height: 80px;
     transition: background 0.15s;
     cursor: default;
   }
 
-  .room-cell:first-child { border-left: none; }
+  /* thick border before every Room 1 column to separate slot groups */
+  .room-cell.room-1 { border-left: 2px solid var(--accent) !important; }
 
   .room-cell.room-1 { background: rgba(79,142,247,0.05); }
   .room-cell.room-2 { background: rgba(162,79,247,0.05); }
@@ -485,6 +479,7 @@
     </select>
     <button class="btn active" id="btnGrid" onclick="setView('grid')">⊞ Grid</button>
     <button class="btn" id="btnList" onclick="setView('list')">≡ List</button>
+    <a href="timetable.html" class="btn" style="text-decoration:none;">Second Timetable</a>
   </div>
 </header>
 
@@ -642,19 +637,14 @@ function renderGrid() {
     html += `<tr><td class="day-label">${day}</td>`;
     for (let si = 0; si < SLOTS.length; si++) {
       const rooms = slots[si] || ['','',''];
-      html += '<td><div class="slot-group">';
       for (let ri = 0; ri < 3; ri++) {
         const text = rooms[ri] || '';
         const matches = matchesFilters(text);
         const highlight = (searchTerm || deptFilter) && matches ? ' highlight' : '';
-        if (matches || (!searchTerm && !deptFilter)) {
-          if (text) count++;
-          html += `<div class="room-cell room-${ri+1}${highlight}">${cellHTML(text, ri)}</div>`;
-        } else {
-          html += `<div class="room-cell room-${ri+1}" style="opacity:.2">${cellHTML(text, ri)}</div>`;
-        }
+        const opacity = (searchTerm || deptFilter) && !matches ? ' style="opacity:.2"' : '';
+        if (matches || (!searchTerm && !deptFilter)) { if (text) count++; }
+        html += `<td class="room-cell room-${ri+1}${highlight}"${opacity}>${cellHTML(text, ri)}</td>`;
       }
-      html += '</div></td>';
     }
     html += '</tr>';
   }

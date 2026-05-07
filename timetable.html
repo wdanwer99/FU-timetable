@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centre Time Table · Excel View</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #14181f;
+    --surface2: #1c2230;
+    --border: #252d3d;
+    --accent: #4f8ef7;
+    --accent2: #f7a24f;
+    --accent3: #4ff7a2;
+    --text: #e2e8f8;
+    --muted: #7a8aaa;
+    --room1b: #4f8ef7;
+    --room2b: #a24ff7;
+    --room3b: #4ff7a2;
+    --room4b: #f7a24f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-left h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header-left p {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 2px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .search-wrap { position: relative; }
+
+  .search-wrap svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+  }
+
+  #searchInput {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    padding: 8px 12px 8px 34px;
+    width: 220px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  #searchInput:focus { border-color: var(--accent); }
+  #searchInput::placeholder { color: var(--muted); }
+
+  select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    padding: 8px 12px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  select:focus { border-color: var(--accent); }
+
+  /* ── Day Tabs ── */
+  .day-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 16px 32px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .day-tab {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+  }
+
+  .day-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .day-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    display: flex;
+    gap: 20px;
+    padding: 10px 32px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    display: inline-block;
+    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+  }
+
+  /* ── Main ── */
+  main { padding: 24px 32px; }
+
+  .grid-container { overflow-x: auto; }
+
+  /* ── Table ── */
+  .timetable-grid {
+    min-width: 1100px;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  /* top-level slot header row */
+  .timetable-grid thead tr:first-child th {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 14px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  /* room sub-header row */
+  .timetable-grid thead tr:nth-child(2) th {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.68rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 10px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .th-day {
+    text-align: left !important;
+    min-width: 100px;
+  }
+
+  .slot-header {
+    background: var(--surface2);
+    border-left: 2px solid var(--accent) !important;
+  }
+
+  .room-sub-1 { border-left: 2px solid var(--accent) !important; }
+
+  .timetable-grid td {
+    vertical-align: top;
+    padding: 0;
+    border: 1px solid var(--border);
+  }
+
+  .day-label {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text);
+    padding: 12px 14px;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    white-space: nowrap;
+    vertical-align: middle !important;
+  }
+
+  .room-cell {
+    padding: 8px 10px;
+    min-width: 130px;
+    min-height: 80px;
+    transition: background 0.15s;
+    font-size: 0.68rem;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .room-cell.r1 { background: rgba(79,142,247,0.05);  border-left: 2px solid var(--accent) !important; }
+  .room-cell.r2 { background: rgba(162,79,247,0.05); }
+  .room-cell.r3 { background: rgba(79,247,162,0.05); }
+  .room-cell.r4 { background: rgba(247,162,79,0.05); }
+
+  .room-cell.r1:hover { background: rgba(79,142,247,0.12); }
+  .room-cell.r2:hover { background: rgba(162,79,247,0.12); }
+  .room-cell.r3:hover { background: rgba(79,247,162,0.12); }
+  .room-cell.r4:hover { background: rgba(247,162,79,0.12); }
+
+  .cell-dept {
+    display: inline-block;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 3px;
+    padding: 1px 6px;
+    margin-bottom: 4px;
+  }
+
+  .dept-FIT   { background: rgba(79,142,247,0.2);  color: var(--room1b); }
+  .dept-FCS   { background: rgba(162,79,247,0.2);  color: var(--room2b); }
+  .dept-TCOM  { background: rgba(79,247,162,0.2);  color: var(--room3b); }
+  .dept-FAD   { background: rgba(247,162,79,0.2);  color: var(--accent2); }
+  .dept-BA    { background: rgba(247,79,79,0.2);   color: #f74f4f; }
+  .dept-HRM   { background: rgba(247,247,79,0.2);  color: #d4d44f; }
+  .dept-FENG  { background: rgba(79,247,247,0.2);  color: #4ff7f7; }
+  .dept-FARCH { background: rgba(200,79,247,0.2);  color: #c84ff7; }
+  .dept-FACC  { background: rgba(247,120,79,0.2);  color: #f7784f; }
+  .dept-FBA   { background: rgba(247,79,162,0.2);  color: #f74fa2; }
+  .dept-MRK   { background: rgba(247,79,162,0.2);  color: #f74fa2; }
+  .dept-Common{ background: rgba(150,150,150,0.2); color: #aaa; }
+
+  .cell-instructor { font-size: 0.6rem; color: var(--accent); margin-top: 2px; }
+  .empty-cell { color: var(--muted); font-size: 0.68rem; text-align: center; padding-top: 24px; }
+  .highlight { background: rgba(79,142,247,0.25) !important; outline: 1px solid var(--accent); }
+
+  @media (max-width: 600px) {
+    header, .day-tabs, main, .stats-bar { padding-left: 16px; padding-right: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Centre Timetable</h1>
+    <p>Academic Schedule · All Departments</p>
+  </div>
+  <div class="controls">
+    <div class="search-wrap">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search course, instructor…">
+    </div>
+    <select id="deptFilter">
+      <option value="">All Departments</option>
+      <option value="FIT">FIT</option>
+      <option value="FCS">FCS</option>
+      <option value="TCOM">TCOM</option>
+      <option value="FAD">FAD</option>
+      <option value="BA">BA</option>
+      <option value="HRM">HRM</option>
+      <option value="FENG">FENG</option>
+      <option value="FARCH">FARCH</option>
+      <option value="FACC">FACC</option>
+      <option value="FBA">FBA</option>
+      <option value="MRK">MRK</option>
+      <option value="Common">Common</option>
+    </select>
+    <a href="index.html" class="btn">← Back to Main View</a>
+  </div>
+</header>
+
+<div class="day-tabs" id="dayTabs">
+  <button class="day-tab active" onclick="filterDay(this,'all')">All Days</button>
+  <button class="day-tab" onclick="filterDay(this,'Saturday')">Saturday</button>
+  <button class="day-tab" onclick="filterDay(this,'Sunday')">Sunday</button>
+  <button class="day-tab" onclick="filterDay(this,'Monday')">Monday</button>
+  <button class="day-tab" onclick="filterDay(this,'Tuesday')">Tuesday</button>
+  <button class="day-tab" onclick="filterDay(this,'Wednesday')">Wednesday</button>
+  <button class="day-tab" onclick="filterDay(this,'Thursday')">Thursday</button>
+</div>
+
+<div class="stats-bar">
+  <div class="stat">Sessions shown: <strong id="statCount">—</strong></div>
+  <div class="stat">
+    Rooms:
+    <span class="legend-dot" style="background:var(--room1b)"></span> Room 1
+    <span class="legend-dot" style="background:var(--room2b)"></span> Room 2
+    <span class="legend-dot" style="background:var(--room3b)"></span> Room 3
+    <span class="legend-dot" style="background:var(--room4b)"></span> Room 4
+  </div>
+</div>
+
+<main>
+  <div class="grid-container">
+    <table class="timetable-grid" id="mainGrid"></table>
+  </div>
+</main>
+
+<script>
+const SLOTS = [
+  "10:00 – 11:30",
+  "11:30 – 13:00",
+  "13:30 – 15:00",
+  "15:00 – 16:30",
+  "16:30 – 18:00",
+  "18:00 – 19:30"
+];
+
+// Excel data: rows 5-10 (0-indexed), cols 4-28
+// Each slot has 4 rooms (cols offset: 1,2,3,4 per slot group of 4)
+const RAW = {
+  Saturday: [
+    ["TCOM - Information Theory and Coding (Sem 9) - Dr. Ashraf","FIT - Object Oriented Analysis & Design - Ust. Ashri - Batch 2021 - Semester 10","FCS - Principles and Applications of Multimedia (Sem 8)","FARCH - Design Studio II (Sem 2) - Ust. Taysir"],
+    ["FCS - Software Applications (Sem 8)","TCOM - Radar & Sonar Engineering (Sem 9) - Dr. Ashraf","FCS - Programming Language II (Sem 4) - Dr. Hamza","FARCH - Design Studio II (Sem 2) - Ust. Taysir"],
+    ["FIT - Internet Technology & Web Design - Ust. Ahmed Ashri - Batch E2022B - Semester 4","FIT - File Management - Dr. Saief Aldolla - Batch 2022 - Semester 8","TCOM - Telecommunication Network Design (Sem 9) - Dr. Khalid","FARCH - Design Studio VI (Sem 6) - Ust. Lubna"],
+    ["FIT - Programming Language - Ust. Ahmed Ashri - Batch 23 & 24 - Semester 2","FIT - Data Mining & Machine Learning - Dr. Saief Aldolla - Batch 2022 - Semester 8","FARCH - Design Studio VI (Sem 6) - Ust. Lubna",""],
+    ["FIT - FCS - Fourth Generation Language - Ust. Ahmed Ashri - Batch E2022A - Semester 6","TCOM - Microwave Technologies (Sem 9)","FCS - Microprocessor & Interfacing (Sem 8)","FARCH - Math II - Dr. Hassan"],
+    ["TCOM - Neural Network & Fuzzy Logic (Sem 9)","FIT - Computer Application - Ust. Ahmed Ashri - Batch 2022 - Semester 8","FAD - Materials & Resources Design I",""]
+  ],
+  Sunday: [
+    ["TCOM - Optical Telecommunication (Sem 9) - Dr. Khalid","FIT - Computer Assisted Management - Ust. Ishtiag - Batch 2021 - Semester 10","FCS - Analysis & Design of Algorithms II (Sem 6) - Dr. Saif","FARCH - Studio Design IX (Sem 9) - Ust. Dania"],
+    ["FIT - Decision Support System - Ust. Ishtiag - Batch 2022 - Semester 8","FCS - Software Engineering I (Sem 8)","FCS - Introduction to Artificial Intelligence (Sem 6) - Dr. Saif","FARCH - Design Studio IX (Sem 9) - Ust. Dania"],
+    ["FIT - Semester Project - Dr. Salah - Batch 2022 - Semester 8","BA - BSSS100 - Descriptive Statistics (Sem 2) - Dr. Musa","FCS - Digital Logic Systems Design (Sem 6)","FARCH - Design Studio VII (Sem 7) - Dr. Mashier"],
+    ["FIT - Organizational Learning - Dr. Salah - Batch 2022 - Semester 8","FCS - Data Base Systems (Sem 4) - Dr. Hamza","FAD - Art of Ancient Civilizations - El-Hassan","FARCH - Design Studio VII (Sem 7) - Dr. Mashier"],
+    ["","","FAD - Interior Design III with Studio (Sem 4) - Mozan","FARCH - Design Studio VI (Sem 7) - Dr. Mashier"],
+    ["FAD - Advanced Exhibition Design","FAD - Advanced Exhibition Design","FAD - New Media Technology",""]
+  ],
+  Monday: [
+    ["FENG - FCS - FTCOM - FGIS - Calculus II - Dr. Yagoub","BA - BABA303 - Intermediate Accounting 1 (Sem 4) - Dr. Yousif","FARCH - Design Studio IV (Sem 4) - Ust. Mohd Baker",""],
+    ["BA - BABL202 - Commercial Law (Sem 4) - Dr. Mujtaba","FACC - BABA304 - Intermediate Accounting II (Sem 4) - Dr. Yousif","FARCH - Design Studio IV (Sem 4) - Ust. Mohd Baker",""],
+    ["BA - BSSM600 - Mathematics II (Sem 2) - Dr. Musa","MRK - BABA306 - Management Accounting (Sem 4) - Dr. Yousif","FARCH - History & Theory of Arch (Sem 4) - Ust. Mohd Baker",""],
+    ["BA - BSSS100 - Descriptive Statistics (Sem 2) - Dr. Musa","FAD - Computer Design 2 (Adobe)","FAD - Computer Design 3 (3D Max)","FAD - (Sem 4) - Ust. Mohd Baker"],
+    ["BA - CSSW102 - Comp Science II (Sem 2) - Dr. Hamza","FAD - Advertising Design","FAD - (Sem 8) - Ust. Mohd Baker","FARCH - Computer Study (Sem 4) - Ust. Amna"],
+    ["FIT - Data Communication - Dr. Khalid - Batch E2022A - Semester 6","","",""]
+  ],
+  Tuesday: [
+    ["FIT - FCS - Introduction to Statistics - Dr. Musa - Batch 2023 & 2024 - Semester 2","FBA - Strategic Management (Sem 8) - Dr. Khider","FIT - Cost Accounting - Dr. Yousef - Batch E2022A - Semester 6","FARCH - Computer Study V (Sem 6) - Ust. Anas"],
+    ["FIT - FCS - Probability Theory - Dr. Musa - Batch E2022B - Semester 4","HRM - BABS603 - Knowledge Management (Sem 6) - Dr. Khidir","Common - Calculus & Analytic Geometry II (Sem 2) - Dr. Musa","FARCH - Computer Study V (Sem 6) - Ust. Anas"],
+    ["FIT - Public Administration - Dr. Mojtaba - Batch E2022B - Semester 4","FIT - Business Law - Dr. Mojtaba - Batch E2022B - Semester 4","BA - BABH713 - Conflict Management (Sem 8) - Dr. Khidir","FARCH - Design Studio VI (Sem 6) - Ust. Lubna"],
+    ["HRM - BABH714 - Environmental Management (Sem 8)","FAD - Illustration II","BA - BABM404 - Business Ethics & SR (Sem 8)",""],
+    ["HRM - BABM408 - Supply Chain Management (Sem 8)","FAD - Graphic Design Technology","BA - BABF103 - Adv Financial Management (Sem 8)","FARCH - Structure II - Dr. Hassan"],
+    ["FIT - Cyber Security - Dr. Khalid - Batch 2021 - Semester 10","FAD - Advanced Visual Merchandising","FAD - Furniture Systems",""]
+  ],
+  Wednesday: [
+    ["FIT - FBA - FCS - Principles of Marketing - Batch 2023 & 2024 - Semester 2","BA - BABM414 - Strategic Management (Sem 8) - Dr. Khidir","FIT - Legal & Ethical Issues - Batch 2021 - Semester 10","FARCH - Design Studio II (Sem 2) - Ust. Taysir"],
+    ["FIT - FBA - Human Organization - Batch 2023 & 2024 - Semester 2","Common - Physics II (Sem 2) - Mrs. Maisaa","FIT - Further Topics in IT - Dr. Zienab - Batch 2021 - Semester 10","FARCH - Design Studio II (Sem 2) - Ust. Taysir"],
+    ["FIT - FCS - Linear Algebra - Dr. Yagoub - Batch 2023 & 2024 - Semester 2","FIT - Managing Information Technology - Dr. Salah - Batch 2021 - Semester 10","",""],
+    ["BA - BABM404 - Business Ethics & SR (Sem 8)","FIT - Trends & Issues in KM - Dr. Salah - Batch 2021 - Semester 10","FAD - Interior Design I with Studio",""],
+    ["BA - BABF103 - Adv Financial Management (Sem 8)","FAD - History of Art - Dr. Alhassan","FIT - Managing & Measuring Knowledge - Dr. Salah - Batch E2022A - Semester 6","FARCH - Computer Studies II (Sem 2) - Ust. Anas"],
+    ["IT, ARCH, FAD - Research Methodology (Sem 6,8) - Dr. Khalid Sheikhidris","FIT - Knowledge Management Work Shop - Dr. Salah - Batch 2021 - Semester 10","FAD - Furniture Systems",""]
+  ],
+  Thursday: [
+    ["FCS - Computer Animation (Sem 10)","FARCH - Design Studio IV (Sem 4) - Ust. Mohd Baker","FENG - FTCOM - Discrete Mathematics - Dr. Yagoub","FENG - Differential Equation - Dr. Musa - Sem 4"],
+    ["FBA - Math II - Dr. Yagoub","FAD - History of Art","FARCH - Design Studio IV (Sem 4) - Ust. Mohd Baker","FENG - FCS - Statistics Probability - Dr. Musa - Semester 4"],
+    ["FIT - FCS - System Analysis & Design - Dr. Hamza - Batch E2022B - Semester 4","FCS - Virtual Reality (Sem 10)","FCS - Concept of Programming Languages (Sem 6) - Dr. Hamza","FARCH - Design Studio IV (Sem 4) - Ust. Mohd Baker"],
+    ["FIT - Software Engineering - Dr. Hamza - Batch 2022 - Semester 8","FCS - Special Topics in Computer Science (Sem 10) - Dr. Zeinab","FAD - (Sem 8) - Ust. Mohd Baker","FARCH - Structure I - Dr. Hassan"],
+    ["FIT - Community of Practice - Dr. Salah - Batch 2021 - Semester 10","FCS - Evaluation of Computer Systems Performance (Sem 10)","","FAD - (Sem 4) - Ust. Mohd Baker"],
+    ["FAD - Materials and Resources 1","FAD - Restoration and Adaptive Reuse of Interior Space","FAD - Exhibition (Final Project)",""]
+  ]
+};
+
+const DAYS = Object.keys(RAW);
+let currentDay = 'all';
+let searchTerm = '';
+let deptFilter = '';
+
+function getDept(text) {
+  if (!text) return '';
+  const map = ['TCOM','FARCH','FACC','FENG','FAD','FCS','FIT','FBA','HRM','MRK','BA','Common','IT','ARCH'];
+  for (const d of map) if (text.startsWith(d)) return d;
+  return '';
+}
+
+function getInstructor(text) {
+  const m = text.match(/(?:Dr\.|Ust\.|Mrs\.|Mr\.)[\w\s.]+/);
+  return m ? m[0].trim() : '';
+}
+
+function matchesFilters(text) {
+  if (!text) return false;
+  const matchSearch = !searchTerm || text.toLowerCase().includes(searchTerm.toLowerCase());
+  const matchDept   = !deptFilter  || text.startsWith(deptFilter);
+  return matchSearch && matchDept;
+}
+
+function cellHTML(text) {
+  if (!text || !text.trim()) return `<div class="empty-cell">—</div>`;
+  const dept = getDept(text.trim());
+  const instr = getInstructor(text);
+  const deptClass = dept ? 'dept-' + dept.replace(/[^a-zA-Z]/g, '') : '';
+  return `<div>
+    ${dept ? `<span class="cell-dept ${deptClass}">${dept}</span>` : ''}
+    <div>${text.replace(/\r?\n/g,' ').replace(/\s+/g,' ')}</div>
+    ${instr ? `<div class="cell-instructor">${instr}</div>` : ''}
+  </div>`;
+}
+
+function render() {
+  const days = currentDay === 'all' ? DAYS : [currentDay];
+  const grid = document.getElementById('mainGrid');
+  const filtering = searchTerm || deptFilter;
+  let count = 0;
+
+  let html = '<thead><tr><th class="th-day">Day</th>';
+  for (const slot of SLOTS) {
+    html += `<th class="slot-header" colspan="4">${slot}</th>`;
+  }
+  html += '</tr><tr><th class="th-day"></th>';
+  for (let s = 0; s < SLOTS.length; s++) {
+    html += '<th class="room-sub-1">Room 1</th><th>Room 2</th><th>Room 3</th><th>Room 4</th>';
+  }
+  html += '</tr></thead><tbody>';
+
+  for (const day of days) {
+    html += `<tr data-day="${day}"><td class="day-label">${day}</td>`;
+    for (let si = 0; si < SLOTS.length; si++) {
+      const rooms = RAW[day][si] || ['','','',''];
+      for (let ri = 0; ri < 4; ri++) {
+        const text = rooms[ri] || '';
+        const matches = matchesFilters(text);
+        const highlight = filtering && matches ? ' highlight' : '';
+        const opacity   = filtering && !matches ? ' style="opacity:.2"' : '';
+        if (text && (matches || !filtering)) count++;
+        html += `<td class="room-cell r${ri+1}${highlight}"${opacity}>${cellHTML(text)}</td>`;
+      }
+    }
+    html += '</tr>';
+  }
+
+  html += '</tbody>';
+  grid.innerHTML = html;
+  document.getElementById('statCount').textContent = count;
+}
+
+function filterDay(btn, day) {
+  currentDay = day;
+  document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchTerm = e.target.value.trim();
+  render();
+});
+
+document.getElementById('deptFilter').addEventListener('change', e => {
+  deptFilter = e.target.value;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
