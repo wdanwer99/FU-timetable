@@ -19,9 +19,11 @@
     --room1: #1e2d4a;
     --room2: #2a1e3f;
     --room3: #1e3a2a;
+    --room4: #3f2a1e;
     --room1b: #4f8ef7;
     --room2b: #a24ff7;
     --room3b: #4ff7a2;
+    --room4b: #f7a24f;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -266,10 +268,12 @@
   .room-cell.room-1 { background: rgba(79,142,247,0.05); }
   .room-cell.room-2 { background: rgba(162,79,247,0.05); }
   .room-cell.room-3 { background: rgba(79,247,162,0.05); }
+  .room-cell.room-4 { background: rgba(247,162,79,0.05); }
 
   .room-cell:hover.room-1 { background: rgba(79,142,247,0.12); }
   .room-cell:hover.room-2 { background: rgba(162,79,247,0.12); }
   .room-cell:hover.room-3 { background: rgba(79,247,162,0.12); }
+  .room-cell:hover.room-4 { background: rgba(247,162,79,0.12); }
 
   .cell-content {
     font-size: 0.7rem;
@@ -364,6 +368,7 @@
   .card.room-1::before { background: var(--room1b); }
   .card.room-2::before { background: var(--room2b); }
   .card.room-3::before { background: var(--room3b); }
+  .card.room-4::before { background: var(--room4b); }
 
   .card:hover { border-color: var(--accent); transform: translateY(-1px); }
 
@@ -495,7 +500,7 @@
 
 <div class="stats-bar" id="statsBar">
   <div class="stat">Sessions shown: <strong id="statCount">—</strong></div>
-  <div class="stat">Rooms: <span class="legend-dot" style="background:var(--room1b);display:inline-block;border-radius:50%;width:8px;height:8px;"></span> Room 1 &nbsp;<span class="legend-dot" style="background:var(--room2b);display:inline-block;border-radius:50%;width:8px;height:8px;"></span> Room 2 &nbsp;<span class="legend-dot" style="background:var(--room3b);display:inline-block;border-radius:50%;width:8px;height:8px;"></span> Room 3</div>
+  <div class="stat">Rooms: <span class="legend-dot" style="background:var(--room1b);display:inline-block;border-radius:50%;width:8px;height:8px;"></span> Room 1 &nbsp;<span class="legend-dot" style="background:var(--room2b);display:inline-block;border-radius:50%;width:8px;height:8px;"></span> Room 2 &nbsp;<span class="legend-dot" style="background:var(--room3b);display:inline-block;border-radius:50%;width:8px;height:8px;"></span> Room 3 &nbsp;<span class="legend-dot" style="background:var(--room4b);display:inline-block;border-radius:50%;width:8px;height:8px;"></span> Room 4</div>
 </div>
 
 <main>
@@ -520,52 +525,52 @@ const SLOTS = [
 
 const RAW = {
   Saturday: [
-    ["TCOM - Information Theory and Coding (Sem 9) - Dr. Ashraf","FIT - Object Oriented Analysis & Design - Ust. Ashri - Batch 2021 - Semester 10","FCS - Principles and Applications of Multimedia (Sem 8)"],
-    ["FCS - Software Applications (Sem 8)","TCOM - Radar & Sonar Engineering (Sem 9) - Dr. Ashraf","FCS - Programming Language II (Sem 4) - Dr. Hamza"],
-    ["FIT - Internet Technology & Web Design - Ust. Ahmed Ashri - Batch E2022B - Semester 4","FIT - File Management - Dr. Saief Aldolla - Batch 2022 - Semester 8","TCOM - Telecommunication Network Design (Sem 9)"],
-    ["FIT - Programming Language - Ust. Ahmed Ashri - Batch 23 & 24 - Semester 2","","TCOM - Computer Aided Design of Circuits & System (Sem 9)"],
-    ["FIT - FCS - Fourth Generation Language - Ust. Ahmed Ashri - Batch E2022A - Semester 6","TCOM - Microwave Technologies (Sem 9)","FCS - Microprocessor & Interfacing (Sem 8)"],
-    ["TCOM - Neural Network & Fuzzy Logic (Sem 9)","FIT - Computer Application - Ust. Ahmed Ashri - Batch 2022 - Semester 8","FAD - Materials & Resources Design I"]
+    ["TCOM - Information Theory and Coding (Sem 9) - Dr. Ashraf","FIT - Object Oriented Analysis & Design - Ust. Ashri - Batch 2021 - Semester 10","FCS - Principles and Applications of Multimedia (Sem 8)","FARCH - Design Studio II (Sem 2) - Ust. Taysir"],
+    ["FCS - Software Applications (Sem 8)","TCOM - Radar & Sonar Engineering (Sem 9) - Dr. Ashraf","FCS - Programming Language II (Sem 4) - Dr. Hamza","FARCH - Design Studio II (Sem 2) - Ust. Taysir"],
+    ["FIT - Internet Technology & Web Design - Ust. Ahmed Ashri - Batch E2022B - Semester 4","FIT - File Management - Dr. Saief Aldolla - Batch 2022 - Semester 8","TCOM - Telecommunication Network Design (Sem 9) - Dr. Khalid","FARCH - Design Studio VI (Sem 6) - Ust. Lubna"],
+    ["FIT - Programming Language - Ust. Ahmed Ashri - Batch 23 & 24 - Semester 2","FIT - Data Mining & Machine Learning - Dr. Saief Aldolla - Batch 2022 - Semester 8","FARCH - Design Studio VI (Sem 6) - Ust. Lubna",""],
+    ["FIT - FCS - Fourth Generation Language - Ust. Ahmed Ashri - Batch E2022A - Semester 6","TCOM - Microwave Technologies (Sem 9)","FCS - Microprocessor & Interfacing (Sem 8)","FARCH - Math II - Dr. Hassan"],
+    ["TCOM - Neural Network & Fuzzy Logic (Sem 9)","FIT - Computer Application - Ust. Ahmed Ashri - Batch 2022 - Semester 8","FAD - Materials & Resources Design I",""]
   ],
   Sunday: [
-    ["TCOM - Optical Telecommunication (Sem 9) - Dr. Khalid","FIT - Computer Assisted Management - Ust. Ishtiag - Batch 2021 - Semester 10","FCS - Analysis & Design of Algorithms II (Sem 6) - Dr. Saif"],
-    ["FIT - Decision Support System - Ust. Ishtiag - Batch 2022 - Semester 8","FCS - Software Engineering I (Sem 8)","FCS - Introduction to Artificial Intelligence (Sem 6) - Dr. Saif"],
-    ["FIT - Semester Project - Dr. Salah - Batch 2022 - Semester 8","","FCS - Digital Logic Systems Design (Sem 6)"],
-    ["FIT - Organisational Learning - Dr. Salah - Batch 2022 - Semester 8","FCS - Data Base Systems (Sem 4) - Dr. Hamza","FAD - Art of Ancient Civilizations"],
-    ["FAD - 3D Digital Modeling Animation","FAD - Applied Project II","FAD - Interior Design III with Studio"],
-    ["FAD - Advanced Exhibition Design","FAD - Advanced Exhibition Design","FAD - New Media Technology"]
+    ["TCOM - Optical Telecommunication (Sem 9) - Dr. Khalid","FIT - Computer Assisted Management - Ust. Ishtiag - Batch 2021 - Semester 10","FCS - Analysis & Design of Algorithms II (Sem 6) - Dr. Saif","FARCH - Studio Design IX (Sem 9) - Ust. Dania"],
+    ["FIT - Decision Support System - Ust. Ishtiag - Batch 2022 - Semester 8","FCS - Software Engineering I (Sem 8)","FCS - Introduction to Artificial Intelligence (Sem 6) - Dr. Saif","FARCH - Design Studio IX (Sem 9) - Ust. Dania"],
+    ["FIT - Semester Project - Dr. Salah - Batch 2022 - Semester 8","BA - BSSS100 - Descriptive Statistics (Sem 2) - Dr. Musa","FCS - Digital Logic Systems Design (Sem 6)","FARCH - Design Studio VII (Sem 7) - Dr. Mashier"],
+    ["FIT - Organizational Learning - Dr. Salah - Batch 2022 - Semester 8","FCS - Data Base Systems (Sem 4) - Dr. Hamza","FAD - Art of Ancient Civilizations - El-Hassan","FARCH - Design Studio VII (Sem 7) - Dr. Mashier"],
+    ["","","FAD - Interior Design III with Studio (Sem 4) - Mozan","FARCH - Design Studio VI (Sem 7) - Dr. Mashier"],
+    ["FAD - Advanced Exhibition Design","FAD - Advanced Exhibition Design","FAD - New Media Technology",""]
   ],
   Monday: [
-    ["BA - BABF104 - Financial Institutions (Sem 10)","BA - BABA303 - Intermediate Accounting 1 (Sem 4) - Dr. Yousif","FAD - Multimedia Authoring III"],
-    ["BA - BABL202 - Commercial Law (Sem 4) - Dr. Mujtaba","FACC - BABA304 - Intermediate Accounting II (Sem 4) - Dr. Yousif","FAD - Principles and Applications in Multimedia"],
-    ["BA - BSSM600 - Mathematics II (Sem 2) - Dr. Musa","MRK - BABA306 - Management Accounting (Sem 4) - Dr. Yousif","FAD - Computer Application I"],
-    ["BA - BSSS100 - Descriptive Statistics (Sem 2) - Dr. Musa","FAD - Computer Design 2 (Adobe)","FAD - Computer Design 3 (3D Max)"],
-    ["BA - CSSW102 - Comp Science II (Sem 2) - Dr. Hamza","FAD - Advertising Design",""],
-    ["FIT - Data Communication - Dr. Khalid - Batch E2022A - Semester 6","BA - BABA302 - Principles of Accounting II (Sem 2) - Dr. Yousif",""]
+    ["FENG - FCS - FTCOM - FGIS - Calculus II - Dr. Yagoub","BA - BABA303 - Intermediate Accounting 1 (Sem 4) - Dr. Yousif","FARCH - Design Studio IV (Sem 4) - Ust. Mohd Baker",""],
+    ["BA - BABL202 - Commercial Law (Sem 4) - Dr. Mujtaba","FACC - BABA304 - Intermediate Accounting II (Sem 4) - Dr. Yousif","FARCH - Design Studio IV (Sem 4) - Ust. Mohd Baker",""],
+    ["BA - BSSM600 - Mathematics II (Sem 2) - Dr. Musa","MRK - BABA306 - Management Accounting (Sem 4) - Dr. Yousif","FARCH - History & Theory of Arch (Sem 4) - Ust. Mohd Baker",""],
+    ["BA - BSSS100 - Descriptive Statistics (Sem 2) - Dr. Musa","FAD - Computer Design 2 (Adobe)","FAD - Computer Design 3 (3D Max)","FAD - (Sem 4) - Ust. Mohd Baker"],
+    ["BA - CSSW102 - Comp Science II (Sem 2) - Dr. Hamza","FAD - Advertising Design","FAD - (Sem 8) - Ust. Mohd Baker","FARCH - Computer Study (Sem 4) - Ust. Amna"],
+    ["FIT - Data Communication - Dr. Khalid - Batch E2022A - Semester 6","","",""]
   ],
   Tuesday: [
-    ["FIT - FCS - Introduction to Statistics - Dr. Musa - Batch 2023 & 2024 - Semester 2","HRM - BABH713 - Conflict Management (Sem 8) - Dr. Khidir","FIT - Cost Accounting - Dr. Yousef - Batch E2022A - Semester 6"],
-    ["FIT - FCS - Probability Theory - Dr. Musa - Batch E2022B - Semester 4","HRM - BABS603 - Knowledge Management (Sem 8) - Dr. Khidir","Common - Calculus & Analytic Geometry II (Sem 2) - Dr. Musa"],
-    ["FIT - Public Administration - Dr. Mojtaba - Batch E2022B - Semester 4","FIT - Business Law - Dr. Mojtaba - Batch E2022B - Semester 4","BA - BABH713 - Conflict Management (Sem 8) - Dr. Khidir"],
-    ["HRM - BABH714 - Environmental Management (Sem 8)","FAD - Illustration II","BA - BABM404 - Business Ethics & SR (Sem 8)"],
-    ["HRM - BABM408 - Supply Chain Management (Sem 8)","FAD - Graphic Design Technology","BA - BABF103 - Adv Financial Management (Sem 8)"],
-    ["FIT - Cyber Security - Dr. Khalid - Batch 2021 - Semester 10","FAD - Advanced Visual Merchandising","FAD - Furniture Systems"]
+    ["FIT - FCS - Introduction to Statistics - Dr. Musa - Batch 2023 & 2024 - Semester 2","FBA - Strategic Management (Sem 8) - Dr. Khidir","FIT - Cost Accounting - Dr. Yousef - Batch E2022A - Semester 6","FARCH - Computer Study V (Sem 6) - Ust. Anas"],
+    ["FIT - FCS - Probability Theory - Dr. Musa - Batch E2022B - Semester 4","HRM - BABS603 - Knowledge Management (Sem 6) - Dr. Khidir","Common - Calculus & Analytic Geometry II (Sem 2) - Dr. Musa","FARCH - Computer Study V (Sem 6) - Ust. Anas"],
+    ["FIT - Public Administration - Dr. Mojtaba - Batch E2022B - Semester 4","FIT - Business Law - Dr. Mojtaba - Batch E2022B - Semester 4","BA - BABH713 - Conflict Management (Sem 8) - Dr. Khidir","FARCH - Design Studio VI (Sem 6) - Ust. Lubna"],
+    ["HRM - BABH714 - Environmental Management (Sem 8)","FAD - Illustration II","BA - BABM404 - Business Ethics & SR (Sem 8)",""],
+    ["HRM - BABM408 - Supply Chain Management (Sem 8)","FAD - Graphic Design Technology (Equipment)","BA - BABF103 - Adv Financial Management (Sem 8)","FARCH - Structure II - Dr. Hassan"],
+    ["FIT - Cyber Security - Dr. Khalid - Batch 2021 - Semester 10","FAD - Advanced Visual Merchandising","FAD - Furniture Systems",""]
   ],
   Wednesday: [
-    ["FIT - FBA - FCS - Principles of Marketing - Batch 2023 & 2024 - Semester 2","BA - BABM414 - Strategic Management (Sem 8) - Dr. Khidir","FIT - Legal & Ethical Issues - Batch 2021 - Semester 10"],
-    ["FIT - FBA - Human Organization - Batch 2023 & 2024 - Semester 2","FIT - FCS - Numerical Computing - Dr. Yagoub - Batch E2022B - Semester 4","FIT - Further Topics in IT - Dr. Zienab - Batch 2021 - Semester 10"],
-    ["FIT - FCS - Linear Algebra - Dr. Yagoub - Batch 2023 & 2024 - Semester 2","FIT - Managing Information Technology - Dr. Salah - Batch 2021 - Semester 10","Common - Physics II (Sem 2) - Mrs. Maisaa"],
-    ["BA - BABM404 - Business Ethics & SR (Sem 8)","FIT - Trends & Issues in KM - Dr. Salah - Batch 2021 - Semester 10","FAD - Interior Design I with Studio"],
-    ["BA - BABF103 - Adv Financial Management (Sem 8)","FAD - History of Art - Dr. Alhassan","FIT - Managing & Measuring Knowledge - Dr. Salah - Batch E2022A - Semester 6"],
-    ["IT, ARCH, FAD - Research Methodology (Sem 6,8) - Dr. Khalid Sheikhidris","FIT - Knowledge Management Work Shop - Dr. Salah - Batch 2021 - Semester 10","FAD - Furniture Systems"]
+    ["FIT - FBA - FCS - Principles of Marketing - Batch 2023 & 2024 - Semester 2","BA - BABM414 - Strategic Management (Sem 8) - Dr. Khidir","FIT - Legal & Ethical Issues - Batch 2021 - Semester 10","FARCH - Design Studio II (Sem 2) - Ust. Taysir"],
+    ["FIT - FBA - Human Organization - Batch 2023 & 2024 - Semester 2","Common - Physics II (Sem 2) - Mrs. Maisaa","FIT - Further Topics in IT - Dr. Zienab - Batch 2021 - Semester 10","FARCH - Design Studio II (Sem 2) - Ust. Taysir"],
+    ["FIT - FCS - Linear Algebra - Dr. Yagoub - Batch 2023 & 2024 - Semester 2","FIT - Managing Information Technology - Dr. Salah - Batch 2021 - Semester 10","",""],
+    ["BA - BABM404 - Business Ethics & SR (Sem 8)","FIT - Trends & Issues in KM - Dr. Salah - Batch 2021 - Semester 10","FAD - Interior Design I with Studio",""],
+    ["BA - BABF103 - Adv Financial Management (Sem 8)","FAD - History of Art - Dr. Alhassan","FIT - Managing & Measuring Knowledge - Dr. Salah - Batch E2022A - Semester 6","FARCH - Computer Studies II (Sem 2) - Ust. Anas"],
+    ["IT, ARCH, FAD - Research Methodology (Sem 6,8) - Dr. Khalid Sheikhidris","FIT - Knowledge Management Work Shop - Dr. Salah - Batch 2021 - Semester 10","FAD - Furniture Systems",""]
   ],
   Thursday: [
-    ["FCS - Computer Animation (Sem 10)","FENG - Discrete Mathematics","FARCH - Calculus II - Dr. Yagoub"],
-    ["FCS - Digital Libraries (Sem 10)","FAD - History of Art","FAD - Interior Design VII with Studio"],
-    ["FIT - FCS - System Analysis & Design - Dr. Hamza - Batch E2022B - Semester 4","FCS - Virtual Reality (Sem 10)","FCS - Concept of Programming Languages (Sem 6) - Dr. Hamza"],
-    ["FIT - Software Engineering - Dr. Hamza - Batch 2022 - Semester 8","FCS - Special Topics in Computer Science (Sem 10) - Dr. Zeinab","FAD - Design by Computer II"],
-    ["FIT - Community of Practice - Dr. Salah - Batch 2021 - Semester 10","FCS - Evaluation of Computer Systems Performance (Sem 10)","FAD - Physics I"],
-    ["FAD - Materials and Resources 1","FAD - Restoration and Adaptive Reuse of Interior Space","FAD - Exhibition (Final Project)"]
+    ["FCS - Computer Animation (Sem 10)","FARCH - Design Studio IV (Sem 4) - Ust. Mohd Baker","FENG - FTCOM - Discrete Mathematics - Dr. Yagoub","FENG - Differential Equation - Dr. Musa - Sem 4"],
+    ["FBA - Math II - Dr. Yagoub","FAD - History of Art","FARCH - Design Studio IV (Sem 4) - Ust. Mohd Baker","FENG - FCS - Statistics Probability - Dr. Musa - Semester 4"],
+    ["FIT - FCS - System Analysis & Design - Dr. Hamza - Batch E2022B - Semester 4","FCS - Virtual Reality (Sem 10)","FCS - Concept of Programming Languages (Sem 6) - Dr. Hamza","FARCH - Design Studio IV (Sem 4) - Ust. Mohd Baker"],
+    ["FIT - Software Engineering - Dr. Hamza - Batch 2022 - Semester 8","FCS - Special Topics in Computer Science (Sem 10) - Dr. Zeinab","FAD - (Sem 8) - Ust. Mohd Baker","FARCH - Structure I - Dr. Hassan"],
+    ["FIT - Community of Practice - Dr. Salah - Batch 2021 - Semester 10","FCS - Evaluation of Computer Systems Performance (Sem 10)","","FAD - (Sem 4) - Ust. Mohd Baker"],
+    ["FAD - Materials and Resources 1","FAD - Restoration and Adaptive Reuse of Interior Space","FAD - Exhibition (Final Project)",""]
   ]
 };
 
@@ -624,11 +629,11 @@ function renderGrid() {
 
   let html = '<thead><tr><th class="day-col">Day</th>';
   for (const slot of SLOTS) {
-    html += `<th class="slot-header" colspan="3">${slot}</th>`;
+    html += `<th class="slot-header" colspan="4">${slot}</th>`;
   }
   html += '</tr><tr><th></th>';
   for (let s = 0; s < SLOTS.length; s++) {
-    html += '<th>Room A</th><th>Room B</th><th>Room C</th>';
+    html += '<th>Room A</th><th>Room B</th><th>Room C</th><th>Room D</th>';
   }
   html += '</tr></thead><tbody>';
 
@@ -636,8 +641,8 @@ function renderGrid() {
     const slots = RAW[day];
     html += `<tr><td class="day-label">${day}</td>`;
     for (let si = 0; si < SLOTS.length; si++) {
-      const rooms = slots[si] || ['','',''];
-      for (let ri = 0; ri < 3; ri++) {
+      const rooms = slots[si] || ['','','',''];
+      for (let ri = 0; ri < 4; ri++) {
         const text = rooms[ri] || '';
         const matches = matchesFilters(text);
         const highlight = (searchTerm || deptFilter) && matches ? ' highlight' : '';
@@ -665,8 +670,8 @@ function renderList() {
     let cards = '';
     const slots = RAW[day];
     for (let si = 0; si < SLOTS.length; si++) {
-      const rooms = slots[si] || ['','',''];
-      for (let ri = 0; ri < 3; ri++) {
+      const rooms = slots[si] || ['','','',''];
+      for (let ri = 0; ri < 4; ri++) {
         const text = rooms[ri] || '';
         if (!text) continue;
         if ((searchTerm || deptFilter) && !matchesFilters(text)) continue;
